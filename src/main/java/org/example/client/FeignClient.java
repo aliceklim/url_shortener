@@ -1,5 +1,6 @@
 package org.example.client;
 
+import org.example.config.context.UserContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

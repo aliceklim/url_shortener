@@ -15,16 +15,18 @@ import java.util.UUID;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Table(name = "hash")
-public class Hash {
+@Table(name = "url")
+public class Url {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     public UUID id;
 
     public String hash;
+
+    public String url;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
