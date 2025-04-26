@@ -3,6 +3,9 @@ package org.example.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cache.HashCache;
+import org.example.dto.UrlDto;
+import org.example.exception.NotFoundException;
 import org.example.repository.UrlRepository;
 import org.springframework.stereotype.Service;
 

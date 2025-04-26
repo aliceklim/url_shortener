@@ -1,6 +1,8 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dto.UrlDto;
+import org.example.service.UrlService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
