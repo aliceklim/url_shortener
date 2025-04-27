@@ -21,11 +21,10 @@ import java.util.UUID;
 @Table(name = "url")
 public class Url {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
-
+    @Column(name = "hash")
     public String hash;
 
+    @Column(name = "url")
     public String url;
 
     @CreationTimestamp

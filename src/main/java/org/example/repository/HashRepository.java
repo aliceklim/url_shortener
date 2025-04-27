@@ -7,15 +7,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Repository
-public interface HashRepository extends JpaRepository<Hash, UUID> {
+public interface HashRepository extends JpaRepository<Hash, Long> {
 
     @Query(nativeQuery = true, value = """
             SELECT nextval('unique_number_seq') FROM generate_series(1, ?)
             """)
-    public Set<UUID> getUniqueNumbers(UUID max);
+    public Set<Long> getUniqueNumbers(Long max);
 
     @Query(nativeQuery = true, value = """
             DELETE FROM hash
