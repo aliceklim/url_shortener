@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 public class RedisCacheService {
     private final RedisCacheRepository redisCacheRepository;
 
-    @Cacheable(value = "hashCash", key = "#hash")
+    @Cacheable(value = "hashCache", key = "#hash")
     public String getUrl(String hash) {
         return redisCacheRepository.getUrl(hash);
     }
 
     public void save(String hash, String url) {
         redisCacheRepository.save(hash, url);
+        log.info("Url was successfully saved: {} with hash: {}", url, hash);
+
     }
 }

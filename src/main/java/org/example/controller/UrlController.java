@@ -12,14 +12,15 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("/url")
 public class UrlController {
     private final UrlService urlService;
+    //VALIDATION
 
     @PostMapping
-    public ResponseEntity<String> getUrl(@RequestBody UrlDto urlDto){
-        return ResponseEntity.ok(urlService.getShortUrl(urlDto));
+    public ResponseEntity<String> shortenUrl(@RequestBody UrlDto urlDto){
+        return ResponseEntity.ok(urlService.generateShortUrl(urlDto));
     }
 
     @GetMapping("/{hash}")
-    public RedirectView redirectToOriginalUrl(@PathVariable String hash) {
+    public RedirectView getOriginalUrl(@PathVariable String hash) {
         String originalUrl = urlService.getOriginalUrl(hash);
         return new RedirectView(originalUrl);
     }

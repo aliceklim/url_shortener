@@ -1,20 +1,18 @@
 package org.example.repository;
 
 import org.example.entity.Hash;
+import org.example.entity.Url;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface UrlRepository extends JpaRepository<URL, UUID> {
+public interface UrlRepository extends JpaRepository<Url, Long> {
     @Query(nativeQuery = true, value = """
             DELETE FROM url
             WHERE created_at < NOW() - INTERVAL '1 year'

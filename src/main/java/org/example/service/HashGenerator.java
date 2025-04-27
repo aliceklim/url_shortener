@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -26,15 +25,13 @@ public class HashGenerator {
     @Value("${batchSize}")
     private int batchSize;
     @Value("${uniqueNumbers}")
-    private UUID uniqueNumber;
+    private Long uniqueNumber;
 
     public void generateBatch() {
-        Set<UUID> uniqueNumbers = hashRepository.getUniqueNumbers(uniqueNumber);
+        Set<Long> uniqueNumbers = hashRepository.getUniqueNumbers(uniqueNumber);
         List<Hash> hashes = uniqueNumbers.stream()
-                .map(uuid -> encode(uuid.getMostSignificantBits()))
-                .map(hashString -> Hash.builder()
-                        .hash(hashString)
-                        .build())
+                .map(this::encode)
+                .map(hash -> Hash.builder().hash(hash).build())
                 .collect(Collectors.toList());
         saveBatch(hashes);
         log.info("{} hashes successfully generated ", hashes);

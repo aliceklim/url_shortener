@@ -1,17 +1,13 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -21,10 +17,8 @@ import java.util.UUID;
 @Table(name = "hash")
 public class Hash {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
-
-    public String hash;
+    @Column(name = "hash")
+    private String hash;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

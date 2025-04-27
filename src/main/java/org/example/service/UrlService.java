@@ -8,7 +8,6 @@ import org.example.dto.UrlDto;
 import org.example.exception.NotFoundException;
 import org.example.repository.UrlRepository;
 import org.springframework.stereotype.Service;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
@@ -22,7 +21,7 @@ public class UrlService {
     private final UrlRepository urlRepository;
 
     @Transactional
-    public String getShortUrl(UrlDto urlDto) {
+    public String generateShortUrl(UrlDto urlDto) {
         String hash = hashCache.getHash();
         String shortUrl = buildShortUrl(urlDto, hash).orElseThrow();
 
