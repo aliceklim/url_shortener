@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.service.HashGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -17,27 +16,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class HashCache {
     @Value("${queue-size}")
-    private int queueSize = 1;
+    private int queueSize;
     @Value("${percent}")
     private int fillPercent;
     private final HashGenerator hashGenerator;
     private final AtomicBoolean filling = new AtomicBoolean(false);
-    public final Queue<String> hashes = new ArrayBlockingQueue<>(queueSize);
+    public Queue<String> hashes;
 
     @PostConstruct
     public void init() {
+        this.hashes = new ArrayBlockingQueue<>(queueSize);
         List<String> generatedHashes = hashGenerator.getHashes(queueSize);
+        log.info("Initialized hash cache with {} hashes", generatedHashes.size());
         for (String hash : generatedHashes) {
             if (hashes.offer(hash)) {
-                log.warn("The element added in queue: {}", hash);
-            } else {
-                log.warn("Queue is full");
+                log.info("Added hash queue: {}, total num of hashes available in queue: {}", hash, hashes.size());
             }
         }
     }
 
     public String getHash() {
         if (hashes.size() / (queueSize / 100.0) < fillPercent) {
+            log.info("Less then {}% of hashes in queue, adding new hashes", fillPercent);
             if (filling.compareAndSet(false, true)) {
                 fillHashes();
             }
@@ -46,6 +46,7 @@ public class HashCache {
     }
 
     private void fillHashes() {
+        log.info("Filling hashes in cache");
         hashGenerator.getHashesAsync(queueSize)
                 .thenAccept(hashes::addAll)
                 .thenRun(() -> filling.set(false));

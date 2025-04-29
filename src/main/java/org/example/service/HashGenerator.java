@@ -27,20 +27,12 @@ public class HashGenerator {
     @Value("${uniqueNumbers}")
     private Long uniqueNumber;
 
-    public void generateBatch() {
-        Set<Long> uniqueNumbers = hashRepository.getUniqueNumbers(uniqueNumber);
-        List<Hash> hashes = uniqueNumbers.stream()
-                .map(this::encode)
-                .map(hash -> Hash.builder().hash(hash).build())
-                .collect(Collectors.toList());
-        saveBatch(hashes);
-        log.info("{} hashes successfully generated ", hashes);
-    }
-
     @Transactional
     public List<String> getHashes(long amount) {
+        log.info("Getting {} hashes from DB", amount);
         List<Hash> hashBatch = hashRepository.getHashAndDelete(amount);
         if (hashBatch.size() < amount) {
+            log.info("Not enough hashes in DB: {}, generating new batch", hashBatch.size());
             generateBatch();
             hashBatch.addAll(hashRepository.getHashAndDelete(amount - hashBatch.size()));
         }
@@ -48,6 +40,16 @@ public class HashGenerator {
         return hashBatch.stream()
                 .map(Hash::getHash)
                 .collect(Collectors.toList());
+    }
+
+    public void generateBatch() {
+        Set<Long> uniqueNumbers = hashRepository.getUniqueNumbers(uniqueNumber);
+        List<Hash> hashes = uniqueNumbers.stream()
+                .map(this::encode)
+                .map(hash -> Hash.builder().hash(hash).build())
+                .collect(Collectors.toList());
+        log.info("{} hashes successfully generated ", hashes.size());
+        saveBatch(hashes);
     }
 
     @Async("batchExecutor")
@@ -76,7 +78,7 @@ public class HashGenerator {
             hashRepository.saveAll(sub);
             result.addAll(sub);
         }
-        log.info("{} hashes were successfully saved ", hashes);
+        log.info("{} hashes were successfully saved to DB", hashes.size());
 
         return result;
     }
