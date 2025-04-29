@@ -9,7 +9,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -27,12 +27,14 @@ server:
 
 logging:
   level:
-    root: error
+    root: INFO
+    org.hibernate: ERROR
+    org.springframework.orm.jpa: ERROR
+    org.springframework.transaction: ERROR
+    org.springframework.jdbc: ERROR
 
 batchSize: 100
-
-uniqueNumbers: 50
-
+uniqueNumbers: 100
 cron_expression: "0 0 0 * * ?"
 
 thread-pool:
@@ -41,5 +43,5 @@ thread-pool:
   corePoolSize: 4
   threadNamePrefix: "poolThread-"
 
-queue-size: 10000
-percent: 20
+queue-size: 100
+percent: 80

@@ -8,8 +8,6 @@ import org.example.dto.UrlDto;
 import org.example.exception.NotFoundException;
 import org.example.repository.UrlRepository;
 import org.springframework.stereotype.Service;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Optional;
 
 @Service
@@ -19,11 +17,12 @@ public class UrlService {
     private final HashCache hashCache;
     private final RedisCacheService redisCacheService;
     private final UrlRepository urlRepository;
+    private static final String SERVICE_URL = "https://magicurl.com/";
 
     @Transactional
     public String generateShortUrl(UrlDto urlDto) {
         String hash = hashCache.getHash();
-        String shortUrl = buildShortUrl(urlDto, hash).orElseThrow();
+        String shortUrl = buildShortUrl(hash);
 
         redisCacheService.save(hash, urlDto.getUrl());
         urlRepository.save(hash, urlDto.getUrl());
@@ -47,20 +46,7 @@ public class UrlService {
         }
     }
 
-    private Optional<String> buildShortUrl(UrlDto urlDto, String hash) {
-        URL url = null;
-        try {
-            url = new URL(urlDto.getUrl());
-        } catch (MalformedURLException e) {
-            log.error(e.getMessage());
-            return Optional.empty();
-        }
-        String protocol = url.getProtocol();
-        String host = url.getHost();
-        int port = url.getPort();
-
-        String portString = (port == -1) ? "" : ":" + port;
-
-        return Optional.of(protocol + "://" + host + portString + "/" + hash);
+    private String buildShortUrl(String hash) {
+        return SERVICE_URL + hash;
     }
 }
