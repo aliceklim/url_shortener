@@ -1,12 +1,13 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UrlDto;
 import org.example.service.UrlService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/url")
@@ -20,8 +21,8 @@ public class UrlController {
     }
 
     @GetMapping("/{hash}")
-    public RedirectView getOriginalUrl(@PathVariable String hash) {
+    public ResponseEntity<String> getOriginalUrl(@PathVariable String hash) {
         String originalUrl = urlService.getOriginalUrl(hash);
-        return new RedirectView(originalUrl);
+        return ResponseEntity.ok(originalUrl);
     }
 }

@@ -8,17 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UrlRepository extends JpaRepository<Url, Long> {
     @Query(nativeQuery = true, value = """
-            DELETE FROM url
-            WHERE created_at < NOW() - INTERVAL '1 year'
-            RETURNING hash_value
-            """)
-    List<Hash> deleteExpiredHashes();
+          DELETE FROM url
+          WHERE created_at < :cutoff
+          RETURNING hash_value
+           """)
+    List<Hash> deleteExpiredHashes(@Param("cutoff") LocalDateTime cutoff);
 
     @Query(nativeQuery = true, value = """
             SELECT url FROM url

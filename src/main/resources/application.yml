@@ -35,7 +35,9 @@ logging:
 
 batchSize: 100
 uniqueNumbers: 100
-cron_expression: "0 0 0 * * ?"
+cron_expression: "0 0 0 * * ?" # Every day at midnight
+url-cleanup:
+  expiration-threshold: "P1D"  # 1 DAY
 
 thread-pool:
   queueCapacity: 100

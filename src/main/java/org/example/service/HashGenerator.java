@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entity.Hash;
 import org.example.repository.HashRepository;
+import org.example.util.Base62Encoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -19,9 +18,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class HashGenerator {
-    private static final int ENCODING_FACTOR = 62;
-    private static final String BASE_62_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final HashRepository hashRepository;
+    private final Base62Encoder base62Encoder;
     @Value("${batchSize}")
     private int batchSize;
     @Value("${uniqueNumbers}")
@@ -45,7 +43,8 @@ public class HashGenerator {
     public void generateBatch() {
         Set<Long> uniqueNumbers = hashRepository.getUniqueNumbers(uniqueNumber);
         List<Hash> hashes = uniqueNumbers.stream()
-                .map(this::encode)
+                .map(Base62Encoder::encode)
+                .distinct()
                 .map(hash -> Hash.builder().hash(hash).build())
                 .collect(Collectors.toList());
         log.info("{} hashes successfully generated ", hashes.size());
@@ -57,29 +56,13 @@ public class HashGenerator {
         return CompletableFuture.completedFuture(getHashes(amount));
     }
 
-    private String encode(long number) {
-        StringBuilder sb = new StringBuilder();
-        do {
-            int remainder = (int) (number % ENCODING_FACTOR);
-            sb.insert(0, BASE_62_ALPHABET.charAt(remainder));
-            number /= ENCODING_FACTOR;
-        } while (number > 0);
-        return sb.toString();
-    }
-
-    private List<Hash> saveBatch(List<Hash> hashes) {
-        List<Hash> result = new ArrayList<>(hashes.size());
+    public void saveBatch(List<Hash> hashes) {
+        long start = System.currentTimeMillis();
         for (int i = 0; i < hashes.size(); i += batchSize) {
-            int size = i + batchSize;
-            if (size > hashes.size()) {
-                size = hashes.size();
-            }
-            List<Hash> sub = hashes.subList(i, size);
+            int end = Math.min(i + batchSize, hashes.size());
+            List<Hash> sub = hashes.subList(i, end);
             hashRepository.saveAll(sub);
-            result.addAll(sub);
         }
-        log.info("{} hashes were successfully saved to DB", hashes.size());
-
-        return result;
+        log.info("{} hashes were successfully saved to DB in {} ms", hashes.size(), System.currentTimeMillis() - start);
     }
 }
