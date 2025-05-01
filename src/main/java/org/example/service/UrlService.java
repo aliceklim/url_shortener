@@ -34,11 +34,13 @@ public class UrlService {
     public String getOriginalUrl(String hash) {
         String cacheUrl = redisCacheService.getUrl(hash);
         if (!cacheUrl.isEmpty()) {
+            log.info("Url was found in redis cache: {}", cacheUrl);
             return cacheUrl;
         }
 
         Optional<String> urlByHash = urlRepository.findUrlByHash(hash);
         if (urlByHash.isPresent()) {
+            log.info("Url was found in DB: {}", urlByHash.get());
             return urlByHash.get();
         } else {
             log.error("Hash doesn't exist");
