@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UrlDto;
@@ -13,10 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/url")
 public class UrlController {
     private final UrlService urlService;
-    //VALIDATION
 
     @PostMapping
-    public ResponseEntity<String> shortenUrl(@RequestBody UrlDto urlDto){
+    public ResponseEntity<String> shortenUrl(@Valid @RequestBody UrlDto urlDto){
         return ResponseEntity.ok(urlService.generateShortUrl(urlDto));
     }
 
