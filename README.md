@@ -4,6 +4,7 @@ URL Shortener Service
 An asynchronous URL shortening service built with Spring Boot. It supports configurable expiration policies, hash generation, and a blocking queue mechanism to manage short URLs.
 
 Features
+
 •	Shorten URLs: Generate unique, base62-encoded short URLs.
 •	Redirect: Access original URLs via short codes.
 •	Configurable Expiration: Define expiration thresholds using ISO-8601 durations (e.g., P1D for 1 day).
