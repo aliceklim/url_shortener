@@ -1,8 +1,8 @@
-# 🌐 URL Shortener Service
+# URL Shortener Service
 
 An asynchronous URL shortening service built with Spring Boot. It supports configurable expiration policies, hash generation, and a blocking queue mechanism to manage short URLs.
 
-## 🚀 Features
+## Features
 
 - **Shorten URLs**: Generate unique, base62-encoded short URLs.
 - **Redirect**: Access original URLs via short codes.
@@ -12,7 +12,7 @@ An asynchronous URL shortening service built with Spring Boot. It supports confi
 - **Asynchronous Processing**: Leverage Spring’s `@Async` for non-blocking operations.
 - **RESTful API**: Interact with the service using standard HTTP methods.
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - Java 17
 - Spring Boot 3
