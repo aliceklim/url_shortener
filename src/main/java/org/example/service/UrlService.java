@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cache.HashCache;
 import org.example.dto.UrlDto;
+import org.example.entity.Hash;
 import org.example.exception.NotFoundException;
 import org.example.repository.UrlRepository;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,11 @@ public class UrlService {
 
     @Transactional
     public String generateShortUrl(UrlDto urlDto) {
-        String hash = hashCache.getHash();
+        Hash hash = hashCache.getHash();
         String shortUrl = buildShortUrl(hash);
 
-        redisCacheService.save(hash, urlDto.getUrl());
-        urlRepository.save(hash, urlDto.getUrl());
+        redisCacheService.save(hash.getHash(), urlDto.getUrl());
+        urlRepository.save(hash.getHash(), urlDto.getUrl());
 
         log.info("Short url was successfully created: {}", shortUrl);
         return shortUrl;
@@ -48,7 +49,7 @@ public class UrlService {
         }
     }
 
-    private String buildShortUrl(String hash) {
-        return SERVICE_URL + hash;
+    private String buildShortUrl(Hash hash) {
+        return SERVICE_URL + hash.getHash();
     }
 }

@@ -25,8 +25,8 @@ public class HashCleaner {
     public void hashClear() {
         Period period = Period.parse(expirationThreshold);
         LocalDateTime cutoff = LocalDateTime.now().minus(period);
-        List<Hash> hashes = urlRepository.deleteExpiredHashes(cutoff);
-        hashGenerator.saveBatch(hashes);
-        log.info("{} hashes deleted from url table and saved to hashes table", hashes.size());
+        List<String> hashes = urlRepository.deleteExpiredHashes(cutoff);
+        hashGenerator.saveBatch(hashes.stream().map(hash -> Hash.builder().hash(hash).build()).toList());
+        log.info("Hash cleaner deleted {} hashes from url table", hashes.size());
     }
 }

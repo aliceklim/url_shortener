@@ -1,6 +1,5 @@
 package org.example.repository;
 
-import org.example.entity.Hash;
 import org.example.entity.Url;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,9 +17,9 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
     @Query(nativeQuery = true, value = """
           DELETE FROM url
           WHERE created_at < :cutoff
-          RETURNING hash_value
+          RETURNING hash
            """)
-    List<Hash> deleteExpiredHashes(@Param("cutoff") LocalDateTime cutoff);
+    List<String> deleteExpiredHashes(@Param("cutoff") LocalDateTime cutoff);
 
     @Query(nativeQuery = true, value = """
             SELECT url FROM url
