@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.0.6"
+    id("org.springframework.boot") version "3.1.5"
     id("io.spring.dependency-management") version "1.1.0"
 }
 group = "org.example"
@@ -43,10 +43,14 @@ dependencies {
     /**
      * Test containers
      */
-    implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
-    testImplementation("org.testcontainers:junit-jupiter")
+    implementation(platform("org.testcontainers:testcontainers-bom:1.19.1"))
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers")
     testImplementation("com.redis.testcontainers:testcontainers-redis-junit-jupiter:1.4.6")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter")
 
     /**
      * Tests
@@ -54,6 +58,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation ("org.springframework.boot:spring-boot-test")
 }
 
 tasks.withType<Test> {

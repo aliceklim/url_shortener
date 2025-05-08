@@ -25,5 +25,5 @@ public interface HashRepository extends JpaRepository<Hash, Long> {
             )
             RETURNING *
             """)
-    public List<Hash> getHashAndDelete(long amount);
+    public List<String> getHashAndDelete(long amount);
 }

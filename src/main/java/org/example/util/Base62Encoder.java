@@ -7,10 +7,7 @@ public class Base62Encoder {
     private static final int ENCODING_FACTOR = 62;
     private static final String BASE_62_ALPHABET = "XyZ012abcDEFGHIJKLmnopQRstuVWXklMNOPghijSTUvw3456789rqABCdefzY";
 
-    private Base62Encoder() {
-    }
-
-    public static String encode(long number) {
+    public String encode(long number) {
         StringBuilder sb = new StringBuilder();
         while (number > 0) {
             int remainder = (int) (number % ENCODING_FACTOR);

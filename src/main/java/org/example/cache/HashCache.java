@@ -3,6 +3,7 @@ package org.example.cache;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.entity.Hash;
 import org.example.service.HashGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class HashCache {
     private int fillPercent;
     private final HashGenerator hashGenerator;
     private final AtomicBoolean filling = new AtomicBoolean(false);
-    public Queue<String> hashes;
+    public Queue<Hash> hashes;
 
     @PostConstruct
     public void init() {
@@ -29,13 +30,13 @@ public class HashCache {
         List<String> generatedHashes = hashGenerator.getHashes(queueSize);
         log.info("Initialized hash cache with {} hashes", generatedHashes.size());
         for (String hash : generatedHashes) {
-            if (hashes.offer(hash)) {
+            if (hashes.offer(Hash.builder().hash(hash).build())) {
                 log.info("Added hash queue: {}, total num of hashes available in queue: {}", hash, hashes.size());
             }
         }
     }
 
-    public String getHash() {
+    public Hash getHash() {
         if (hashes.size() / (queueSize / 100.0) < fillPercent) {
             log.info("Less then {}% of hashes in queue, adding new hashes", fillPercent);
             if (filling.compareAndSet(false, true)) {
@@ -48,7 +49,11 @@ public class HashCache {
     private void fillHashes() {
         log.info("Filling hashes in cache");
         hashGenerator.getHashesAsync(queueSize)
-                .thenAccept(hashes::addAll)
+                .thenAccept(list -> hashes.addAll(
+                        list.stream()
+                                .map(h -> Hash.builder().hash(h).build())
+                                .toList()
+                ))
                 .thenRun(() -> filling.set(false));
     }
 }
